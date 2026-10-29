@@ -298,7 +298,7 @@
                     <li><a href="#events" onclick="switchTab('events')">Events</a></li>
                     <li><a href="#register" onclick="switchTab('register')">Subscribe</a></li>
                     <li><a href="#login" onclick="switchTab('login')">Login</a></li>
-               <li><a href="#admin" onclick="checkAdminPassword()">Admin Panel</a></li>
+                    <li><a href="#admin" onclick="checkAdminPassword()">Admin Panel</a></li>
                 </ul>
             </nav>
         </div>
@@ -508,46 +508,52 @@
         </main>
     </div>
 
-    <!-- Dashboard Tab -->
-    <div id="tab-dashboard" class=
-    <!-- Onjezani izi mu Navigation ul yanu (pamwamba pa tsamba) -->
-<li><a href="#admin" onclick="switchTab('admin')">Admin Panel</a></li>
+    <!-- Admin Tab -->
+    <div id="tab-admin" class="tab-page" style="display: none;">
+        <main class="container">
+            <div class="form-container" style="max-width: 600px;">
+                <h2 class="section-title" style="text-align: center; width: 100%;">Admin Management Panel</h2>
+                <p style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem; color: #4a5568;">Sinthani zambiri za achinyamata m'distrikiti.</p>
 
-<!-- Onjezani tsambali (Tab) pamodzi ndi ma tabu ena amene mulipo -->
-<div id="tab-admin" class="tab-page" style="display: none;">
-    <main class="container">
-        <div class="form-container" style="max-width: 600px;">
-            <h2 class="section-title" style="text-align: center; width: 100%;">Admin Management Panel</h2>
-            <p style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem; color: #4a5568;">Sinthani zambiri za achinyamata a Dedza East pano.</p>
-            
-            <!-- Sintha Masiku a Choir / Msonkhano -->
-            <div class="form-group">
-                <label>Patsani Tsiku Latsopano la Choir / Msonkhano:</label>
-                <input type="text" id="admin-choir-date" placeholder="Mwachitsanzo: Loweruka lino nthawi ya 2 PM">
-                <button onclick="updateChoirDate()" class="btn" style="margin-top: 0.5rem; width: 100%;">Sungani Tsiku Latsopano</button>
-            </div>
+                <!-- Sintha Masiku a Choir / Msonkhano -->
+                <div class="form-group">
+                    <label>Patsani Tsiku Latsopano la Choir / Msonkhano:</label>
+                    <input type="text" id="admin-choir-date" placeholder="Mwachitsanzo: Loweruka lino nthawi ya 2 PM">
+                    <button onclick="updateChoirDate()" class="btn" style="margin-top: 0.5rem; width: 100%;">Sungani Tsiku Latsopano</button>
+                </div>
 
-            <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
 
-            <!-- Kuwonjezera Chilengezo -->
-            <div class="form-group">
-                <label>Ikani Chilengezo Chatsopano:</label>
-                <input type="text" id="admin-announcement" placeholder="Mutu wa chilengezo kapena uthenga...">
-                <button onclick="postAnnouncement()" class="btn" style="margin-top: 0.5rem; width: 100%;">Tumizani Chilengezo</button>
-            </div>
+                <!-- Kuwonjezera Chilengezo -->
+                <div class="form-group">
+                    <label>Ikani Chilengezo Chatsopano:</label>
+                    <input type="text" id="admin-announcement" placeholder="Mutu wa chilengezo kapena uthenga...">
+                    <button onclick="postAnnouncement()" class="btn" style="margin-top: 0.5rem; width: 100%;">Tumizani Chilengezo</button>
+                </div>
 
-            <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
 
-            <!-- Kuona Amembala Olembetsa -->
-            <div>
-                <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.8rem;">Mndandanda wa Amembala Olembetsa:</h3>
-                <div id="members-list-box" style="background: #f7fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; max-height: 150px; overflow-y: auto; font-size: 0.85rem;">
-                    <p style="color: #718096;">Palibe membala wolembetsa pakali pano kapena foni yasungidwa m'kumbukumbu ya pa foni.</p>
+                <!-- Kuona Amembala Olembetsa -->
+                <div>
+                    <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.8rem;">Mndandanda wa Amembala Olembetsa:</h3>
+                    <div id="members-list-box" style="background: #f7fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <p style="color: #718096;">Palibe membala wolembetsa pakali pano kapena foni yasungidwa m'kumbukumbu ya pa foni.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
-</div>    <script>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 New Apostolic Church - Dedza East Youth District. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript Scripts -->
+    <script>
+        // SheetDB API URL (Linked directly to Google Sheet ID: 1exkt2OEkXJAmUYQPRdZBTGFGu_wjs1kKGS-w5_fn2xg)
+        const SHEETDB_URL = 'https://sheetdb.io/api/v1/xg2fn2xg5w1kK';
+
+        // 1. Navigation Tab Switcher
         function switchTab(tabName) {
             const tabs = document.querySelectorAll('.tab-page');
             tabs.forEach(tab => tab.style.display = 'none');
@@ -555,18 +561,18 @@
             const navLinks = document.querySelectorAll('nav a');
             navLinks.forEach(link => link.classList.remove('active'));
 
-            const activeTab = document.getElementById('tab-' + tabName);
-            if (activeTab) {
-                activeTab.style.display = 'block';
+            const targetTab = document.getElementById('tab-' + tabName);
+            if (targetTab) {
+                targetTab.style.display = 'block';
             }
-
+            
             const activeLink = document.querySelector(`nav a[href="#${tabName}"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
+            if (activeLink) activeLink.classList.add('active');
+            
+            window.scrollTo(0, 0);
         }
 
-        // ACCORDION ZA CATECHISM
+        // 2. Accordion za Catechism
         const acc = document.getElementsByClassName("accordion");
         for (let i = 0; i < acc.length; i++) {
             acc[i].addEventListener("click", function() {
@@ -580,28 +586,77 @@
             });
         }
 
-        // ADMIN & REGISTRATION LOGIC
-        let registeredMembers = JSON.parse(localStorage.getItem('nac_members')) || [];
-
-        function handleRegister(event) {
+        // 3. Handle Registration with SheetDB API
+        async function handleRegister(event) {
             event.preventDefault();
+
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerText = "Kutumiza...";
+                submitBtn.disabled = true;
+            }
+
             const name = document.getElementById('reg-name').value;
             const email = document.getElementById('reg-email').value;
             const phone = document.getElementById('reg-phone').value;
             const congregation = document.getElementById('reg-congregation').value;
             const role = document.getElementById('reg-role').value;
 
-            const newMember = { name, email, phone, congregation, role };
-            registeredMembers.push(newMember);
-            
-            localStorage.setItem('nac_members', JSON.stringify(registeredMembers));
+            const formData = {
+                data: [{
+                    Name: name,
+                    Email: email,
+                    Phone: phone,
+                    Congregation: congregation,
+                    Role: role,
+                    Timestamp: new Date().toLocaleString()
+                }]
+            };
 
-            alert(`Zikomo ${name}! Kulembetsa kwanu kwalandiridwa bwino.`);
-            document.getElementById('registrationForm').reset();
-            updateMembersListUI();
-            switchTab('login');
+            try {
+                const response = await fetch(SHEETDB_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    let registeredMembers = JSON.parse(localStorage.getItem('nac_members')) || [];
+                    registeredMembers.push({ name, email, phone, congregation, role });
+                    localStorage.setItem('nac_members', JSON.stringify(registeredMembers));
+
+                    alert(`Zikomo ${name}! Kulembetsa kwanu kwalandiridwa bwino ndipo kwasungika mu Google Sheets.`);
+                    document.getElementById('registrationForm').reset();
+                    updateMembersListUI();
+                    switchTab('home');
+                } else {
+                    alert("Pali vuto pakutumiza ku Google Sheets. Chonde yesani kachiwiri.");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert("Kulumikizana kwalephera. Onetsetsani kuti muli ndi intaneti.");
+            } finally {
+                if (submitBtn) {
+                    submitBtn.innerText = "Lembetsani";
+                    submitBtn.disabled = false;
+                }
+            }
         }
 
+        // 4. Admin Panel Security Password
+        function checkAdminPassword() {
+            const password = prompt("Lowetsani Chinsinsi cha Admin (Admin Password):");
+            if (password === "DedzaEast2026") {
+                switchTab('admin');
+            } else if (password !== null) {
+                alert("Chinsinsi chalolakwika! Simungathe kulowa mu Admin Panel.");
+            }
+        }
+
+        // 5. Update Choir Date (Admin)
         function updateChoirDate() {
             const newDate = document.getElementById('admin-choir-date').value;
             if (newDate) {
@@ -613,6 +668,7 @@
             }
         }
 
+        // 6. Post Announcement (Admin)
         function postAnnouncement() {
             const announcementText = document.getElementById('admin-announcement').value;
             if (announcementText) {
@@ -624,11 +680,15 @@
             }
         }
 
+        // 7. Render Registered Members in Admin Panel
         function updateMembersListUI() {
             const listBox = document.getElementById('members-list-box');
             if (!listBox) return;
+
+            let registeredMembers = JSON.parse(localStorage.getItem('nac_members')) || [];
+
             if (registeredMembers.length === 0) {
-                listBox.innerHTML = `<p style="color: #718096;">Palibe membala wolembetsa pakali pano.</p>`;
+                listBox.innerHTML = '<p style="color: #718096;">Palibe membala wolembetsa pakali pano pa foni/chipangizo chino.</p>';
                 return;
             }
 
@@ -640,18 +700,17 @@
             listBox.innerHTML = html;
         }
 
+        // 8. On Load Initializer
         window.onload = function() {
             updateMembersListUI();
-        };        function checkAdminPassword() {
-            let password = prompt("Lowetsani Chinsinsi cha Admin (Admin Password):");
-            if (password === "DedzaEast2026") {
-                switchTab('admin');
-            } else if (password !== null) {
-                alert("Chinsinsi chalolakwika! Simungathe kulowa mu Admin Panel.");
-            }
+        };
+
+        // 9. Login Handler
+        function handleLogin(event) {
+            event.preventDefault();
+            alert("Mwalowa bwino pa portal!");
+            switchTab('home');
         }
     </script>
 </body>
 </html>
-
-
