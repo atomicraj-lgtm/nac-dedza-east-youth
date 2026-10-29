@@ -204,8 +204,42 @@
             color: #4a5568;
         }
 
+        .tier-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tier-card {
+            background: #fff;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tier-card.selected {
+            border-color: var(--accent);
+            background-color: #fefcbf;
+        }
+
+        .tier-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .tier-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #b7791f;
+            margin: 0.4rem 0;
+        }
+
         .form-container {
-            max-width: 500px;
+            max-width: 550px;
             margin: 1rem auto;
             background: var(--white);
             padding: 1.5rem;
@@ -224,7 +258,7 @@
             font-size: 0.85rem;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.65rem;
             border: 1px solid #cbd5e0;
@@ -296,7 +330,8 @@
                     <li><a href="#about" onclick="switchTab('about')">About & Congregations</a></li>
                     <li><a href="#catechism" onclick="switchTab('catechism')">Catechism & Policy</a></li>
                     <li><a href="#events" onclick="switchTab('events')">Events</a></li>
-                    <li><a href="#register" onclick="switchTab('register')">Subscribe</a></li>
+                    <li><a href="#resources" onclick="switchTab('resources')">Resources & Downloads</a></li>
+                    <li><a href="#register" onclick="switchTab('register')">Subscribe & Pay</a></li>
                     <li><a href="#login" onclick="switchTab('login')">Login</a></li>
                     <li><a href="#admin" onclick="checkAdminPassword()">Admin Panel</a></li>
                 </ul>
@@ -307,8 +342,8 @@
     <!-- Home Tab -->
     <div id="tab-home" class="tab-page">
         <section class="hero">
-            <h2>Mlandiridwa pa Youth Portal!</h2>
-            <p>Mawu Afe: <strong>"Don't be afraid. Just believe!" (Marko 5:36)</strong> - Kulumikiza ndi kulimbikitsa achinyamata onse m'mampingo 15 a Dedza East.</p>
+            <h2 id="welcoming-heading">Mlandiridwa pa Youth Portal!</h2>
+            <p id="welcoming-text">Mawu Afe: <strong>"Don't be afraid. Just believe!" (Marko 5:36)</strong> - Kulumikiza ndi kulimbikitsa achinyamata onse m'mampingo 15 a Dedza East.</p>
             <a href="#register" onclick="switchTab('register')" class="btn">Lembetsani Tsopano</a>
         </section>
 
@@ -329,13 +364,12 @@
             <div class="grid">
                 <div class="card">
                     <h3>Zoyeseza za Choir za Distrikiti</h3>
-                    <p><strong>Tsiku:</strong> Loweruka lililonse nthawi ya 2:00 PM</p>
+                    <p id="choir-date-display"><strong>Tsiku:</strong> Loweruka lililonse nthawi ya 2:00 PM</p>
                     <p>Kukonzekera misonkhano ikuluikulu ya achinyamata ndi mautumiki.</p>
                 </div>
                 <div class="card">
-                    <h3>Msonkhano wa Achinyamata</h3>
-                    <p><strong>Uthenga:</strong> Kulimbikitsa chikhulupiriro ndi mgwirizano.</p>
-                    <p>Zambiri za misonkhano ya m'boma zikupezeka mkati mwa portal.</p>
+                    <h3>Chilengezo cha Admin</h3>
+                    <p id="latest-announcement-display">Zambiri za misonkhano ya m'boma zikupezeka mkati mwa portal.</p>
                 </div>
                 <div class="card">
                     <h3>Ntchito Zachifundo</h3>
@@ -350,7 +384,7 @@
     <div id="tab-about" class="tab-page" style="display: none;">
         <main class="container">
             <h2 class="section-title">Mampingo Onse 15 a Dedza East</h2>
-            <p style="margin-bottom: 1.2rem;">Distrikiti yathu ili pansi pa **District Rector DR Hara** (Dedza East District Rectory) ndi **Apostle Kondwani Chisi** (Mangochi Apostle Area). Mampingo ake ni awa:</p>
+            <p style="margin-bottom: 1.2rem;">Distrikiti yathu ili pansi pa <strong>District Rector DR Hara</strong> (Dedza East District Rectory) ndi <strong>Apostle Kondwani Chisi</strong> (Mangochi Apostle Area). Mampingo ake ni awa:</p>
             
             <div class="grid">
                 <div class="card"><h3>1. Dedza Central</h3><p>District Center Station</p></div>
@@ -431,22 +465,63 @@
         </main>
     </div>
 
-    <!-- Registration Tab -->
+    <!-- Resources & Downloads Tab -->
+    <div id="tab-resources" class="tab-page" style="display: none;">
+        <main class="container">
+            <h2 class="section-title">Resources & File Downloads</h2>
+            <p style="margin-bottom: 1.2rem;">Kopani kapena tsitsani zikalata, maphunziro, ndi zilengezo zotumizidwa ndi Admin:</p>
+            <div id="public-files-box" class="grid">
+                <div class="card">
+                    <h3>Zikalata za Mpingo</h3>
+                    <p>Palibe chikalata chomwe chayikidwa pakali pano.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Subscription & Registration Tab -->
     <div id="tab-register" class="tab-page" style="display: none;">
         <main class="container">
             <div class="form-container">
-                <h2 class="section-title" style="text-align: center; width: 100%;">Kulembetsa Membala</h2>
+                <h2 class="section-title" style="text-align: center; width: 100%;">Subscription & Registration</h2>
+                
+                <p style="font-size: 0.85rem; color: #4a5568; margin-bottom: 1rem; text-align: center;">
+                    Sankhani mtundu wa mwezi uliwonse womwe mukufuna kulipira:
+                </p>
+
+                <!-- Paid Tiers -->
+                <div class="tier-box">
+                    <div class="tier-card selected" onclick="selectTier('Standard', 1000, this)">
+                        <h3>Standard</h3>
+                        <div class="tier-price">K1,000 / mwezi</div>
+                        <p style="font-size:0.75rem;">Adipiti ya Mwezi & Misonkhano</p>
+                    </div>
+                    <div class="tier-card" onclick="selectTier('Silver', 2000, this)">
+                        <h3>Silver</h3>
+                        <div class="tier-price">K2,000 / mwezi</div>
+                        <p style="font-size:0.75rem;">Kwaya, Zikalata & Zochitika</p>
+                    </div>
+                    <div class="tier-card" onclick="selectTier('Premium', 5000, this)">
+                        <h3>Premium</h3>
+                        <div class="tier-price">K5,000 / mwezi</div>
+                        <p style="font-size:0.75rem;">Full Portal Access & VIP Support</p>
+                    </div>
+                </div>
+
                 <form id="registrationForm" onsubmit="handleRegister(event)">
+                    <input type="hidden" id="reg-tier" value="Standard">
+                    <input type="hidden" id="reg-amount" value="1000">
+
                     <div class="form-group">
                         <label>Dzina Lathunthu *</label>
-                        <input type="text" id="reg-name" required>
+                        <input type="text" id="reg-name" required placeholder="Lembani dzina lanu lonsene">
                     </div>
                     <div class="form-group">
-                        <label>Email Address *</label>
-                        <input type="email" id="reg-email" required>
+                        <label>Email Address (Siya ngati mulibe / Optional)</label>
+                        <input type="email" id="reg-email" placeholder="E.g. name@gmail.com (Optional)">
                     </div>
                     <div class="form-group">
-                        <label>Nambala ya Foni (WhatsApp) *</label>
+                        <label>Nambala ya Foni (WhatsApp / Mobile Money) *</label>
                         <input type="tel" id="reg-phone" placeholder="+265..." required>
                     </div>
                     <div class="form-group">
@@ -478,11 +553,19 @@
                             <option value="Youth Leader">Youth Leader</option>
                         </select>
                     </div>
+
+                    <div class="form-group" style="background:#ebf8ff; padding:12px; border-radius:6px; font-size:0.85rem; border-left:4px solid var(--primary-light);">
+                        <strong>Ndalama Zolipira:</strong> <span id="display-amount" style="color:var(--accent); font-weight:bold;">K1,000</span> / Mwezi<br>
+                        <strong>Airtel Money Number:</strong> <span style="font-family:monospace; font-weight:bold; color:#1a365d;">0999682766</span><br>
+                        <strong>Mpamba Number:</strong> <span style="font-family:monospace; font-weight:bold; color:#1a365d;">0888793963</span><br>
+                        <span style="font-size:0.75rem; color:#4a5568;">(Tumizani ndalama ku nambala imeneyi, kenako lembetsani pano.)</span>
+                    </div>
+
                     <div class="form-group">
                         <label>Chinsinsi (Password) *</label>
                         <input type="password" id="reg-password" required>
                     </div>
-                    <button type="submit" class="btn" style="width: 100%;">Lembetsani</button>
+                    <button type="submit" class="btn" style="width: 100%;">Lembetsani & Lipirani</button>
                 </form>
             </div>
         </main>
@@ -495,8 +578,8 @@
                 <h2 class="section-title" style="text-align: center; width: 100%;">Kulowa pa Portal</h2>
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="login-email" required>
+                        <label>Nambala ya Foni kapena Email</label>
+                        <input type="text" id="login-identifier" required placeholder="+265... / Email">
                     </div>
                     <div class="form-group">
                         <label>Password</label>
@@ -511,9 +594,29 @@
     <!-- Admin Tab -->
     <div id="tab-admin" class="tab-page" style="display: none;">
         <main class="container">
-            <div class="form-container" style="max-width: 600px;">
+            <div class="form-container" style="max-width: 650px;">
                 <h2 class="section-title" style="text-align: center; width: 100%;">Admin Management Panel</h2>
-                <p style="text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem; color: #4a5568;">Sinthani zambiri za achinyamata m'distrikiti.</p>
+
+                <!-- Welcoming Words Editor -->
+                <div class="form-group">
+                    <label>Sinthani Mawu Olandiridwa (Welcoming Heading):</label>
+                    <input type="text" id="admin-welcome-heading" placeholder="Mwachitsanzo: Mlandiridwa pa Youth Portal!">
+                    <label style="margin-top:0.5rem;">Sinthani Mawu Afe / Uthenga (Welcoming Subtext):</label>
+                    <textarea id="admin-welcome-text" rows="2" placeholder="Lembani uthenga watsopano wa pa Home..."></textarea>
+                    <button onclick="updateWelcomingWords()" class="btn" style="margin-top: 0.5rem; width: 100%;">Sungani Mawu Olandiridwa</button>
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
+
+                <!-- File Upload / Resources Management -->
+                <div class="form-group">
+                    <label>Kuyika Zikalata / Files pa Portal (Admin Upload):</label>
+                    <input type="text" id="admin-file-title" placeholder="Mutu wa Chikalata (e.g., Kwaya Program PDF)">
+                    <input type="url" id="admin-file-link" placeholder="Link ya Fayilo / Google Drive URL" style="margin-top:0.4rem;">
+                    <button onclick="uploadAdminFile()" class="btn" style="margin-top: 0.5rem; width: 100%;">Tumizani Fayilo pa Portal</button>
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
 
                 <!-- Sintha Masiku a Choir / Msonkhano -->
                 <div class="form-group">
@@ -533,11 +636,11 @@
 
                 <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
 
-                <!-- Kuona Amembala Olembetsa -->
+                <!-- Kuona Amembala Olembetsa ndi Payment Tiers -->
                 <div>
-                    <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.8rem;">Mndandanda wa Amembala Olembetsa:</h3>
+                    <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.8rem;">Amembala Olembetsa ndi Kupereka Ndalama:</h3>
                     <div id="members-list-box" style="background: #f7fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                        <p style="color: #718096;">Palibe membala wolembetsa pakali pano kapena foni yasungidwa m'kumbukumbu ya pa foni.</p>
+                        <p style="color: #718096;">Palibe membala wolembetsa pakali pano pa foni/chipangizo chino.</p>
                     </div>
                 </div>
             </div>
@@ -553,7 +656,14 @@
         // SheetDB API URL (Linked directly to Google Sheet ID: 1exkt2OEkXJAmUYQPRdZBTGFGu_wjs1kKGS-w5_fn2xg)
         const SHEETDB_URL = 'https://sheetdb.io/api/v1/xg2fn2xg5w1kK';
 
-        // 1. Navigation Tab Switcher
+        function selectTier(tierName, amount, element) {
+            document.querySelectorAll('.tier-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('reg-tier').value = tierName;
+            document.getElementById('reg-amount').value = amount;
+            document.getElementById('display-amount').innerText = 'K' + amount.toLocaleString();
+        }
+
         function switchTab(tabName) {
             const tabs = document.querySelectorAll('.tab-page');
             tabs.forEach(tab => tab.style.display = 'none');
@@ -572,7 +682,6 @@
             window.scrollTo(0, 0);
         }
 
-        // 2. Accordion za Catechism
         const acc = document.getElementsByClassName("accordion");
         for (let i = 0; i < acc.length; i++) {
             acc[i].addEventListener("click", function() {
@@ -586,7 +695,6 @@
             });
         }
 
-        // 3. Handle Registration with SheetDB API
         async function handleRegister(event) {
             event.preventDefault();
 
@@ -597,10 +705,15 @@
             }
 
             const name = document.getElementById('reg-name').value;
-            const email = document.getElementById('reg-email').value;
+            const email = document.getElementById('reg-email').value || 'N/A';
             const phone = document.getElementById('reg-phone').value;
             const congregation = document.getElementById('reg-congregation').value;
             const role = document.getElementById('reg-role').value;
+            const tier = document.getElementById('reg-tier').value;
+            const amount = document.getElementById('reg-amount').value;
+            const regDate = new Date();
+            const dueDate = new Date();
+            dueDate.setDate(regDate.getDate() + 30);
 
             const formData = {
                 data: [{
@@ -609,7 +722,9 @@
                     Phone: phone,
                     Congregation: congregation,
                     Role: role,
-                    Timestamp: new Date().toLocaleString()
+                    Tier: tier,
+                    Amount: "K" + amount,
+                    Timestamp: regDate.toLocaleString()
                 }]
             };
 
@@ -625,28 +740,39 @@
 
                 if (response.ok) {
                     let registeredMembers = JSON.parse(localStorage.getItem('nac_members')) || [];
-                    registeredMembers.push({ name, email, phone, congregation, role });
+                    registeredMembers.push({ 
+                        name, email, phone, congregation, role, tier, amount, 
+                        regDate: regDate.toLocaleDateString(), 
+                        dueDate: dueDate.toLocaleDateString() 
+                    });
                     localStorage.setItem('nac_members', JSON.stringify(registeredMembers));
 
-                    alert(`Zikomo ${name}! Kulembetsa kwanu kwalandiridwa bwino ndipo kwasungika mu Google Sheets.`);
+                    const smsMessage = `[NAC Dedza East] Zikomo ${name}! Malipiro a ${tier} Tier (K${amount}) amvedwa. Subscription yanu ndiyovomerezeka mpaka ${dueDate.toLocaleDateString()}. Onetsetsani kuti mwandokonzanso patatha masiku 30 (Airtel: 0999682766 | Mpamba: 0888793963).`;
+
+                    alert(`Zikomo ${name}!
+
+Kulembetsa ndi malipiro a ${tier} Tier (K${amount}) kwalandiridwa bwino ndipo kwasungika mu Google Sheets.
+
+[SMS Notification Prompt]:
+${smsMessage}`);
+                    
                     document.getElementById('registrationForm').reset();
                     updateMembersListUI();
                     switchTab('home');
                 } else {
-                    alert("Pali vuto pakutumiza ku Google Sheets. Chonde yesani kachiwiri.");
+                    alert("Pali vuto pakutumiza ku Google Sheets. Onetsetsani kuti Row 1 ya Sheet yanu ili ndi mitu: Name, Email, Phone, Congregation, Role, Tier, Amount, Timestamp.");
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alert("Kulumikizana kwalephera. Onetsetsani kuti muli ndi intaneti.");
             } finally {
                 if (submitBtn) {
-                    submitBtn.innerText = "Lembetsani";
+                    submitBtn.innerText = "Lembetsani & Lipirani";
                     submitBtn.disabled = false;
                 }
             }
         }
 
-        // 4. Admin Panel Security Password
         function checkAdminPassword() {
             const password = prompt("Lowetsani Chinsinsi cha Admin (Admin Password):");
             if (password === "DedzaEast2026") {
@@ -656,11 +782,68 @@
             }
         }
 
-        // 5. Update Choir Date (Admin)
+        function updateWelcomingWords() {
+            const heading = document.getElementById('admin-welcome-heading').value;
+            const text = document.getElementById('admin-welcome-text').value;
+
+            if (heading) {
+                localStorage.setItem('nac_welcome_heading', heading);
+                document.getElementById('welcoming-heading').innerText = heading;
+            }
+            if (text) {
+                localStorage.setItem('nac_welcome_text', text);
+                document.getElementById('welcoming-text').innerHTML = text;
+            }
+
+            alert("Mawu olandiridwa pa Home zasinthidwa bwino!");
+        }
+
+        function uploadAdminFile() {
+            const title = document.getElementById('admin-file-title').value;
+            const link = document.getElementById('admin-file-link').value;
+
+            if (!title || !link) {
+                alert("Chonde lembani mutu ndi link ya fayiloyo.");
+                return;
+            }
+
+            let adminFiles = JSON.parse(localStorage.getItem('nac_admin_files')) || [];
+            adminFiles.push({ title, link });
+            localStorage.setItem('nac_admin_files', JSON.stringify(adminFiles));
+
+            alert("Chikalata chaimidwa pa portal!");
+            document.getElementById('admin-file-title').value = '';
+            document.getElementById('admin-file-link').value = '';
+            renderPublicFiles();
+        }
+
+        function renderPublicFiles() {
+            const box = document.getElementById('public-files-box');
+            if (!box) return;
+
+            let adminFiles = JSON.parse(localStorage.getItem('nac_admin_files')) || [];
+            if (adminFiles.length === 0) {
+                box.innerHTML = '<div class="card"><h3>Zikalata za Mpingo</h3><p>Palibe chikalata chomwe chayikidwa pakali pano.</p></div>';
+                return;
+            }
+
+            let html = '';
+            adminFiles.forEach(file => {
+                html += `
+                    <div class="card">
+                        <h3>${file.title}</h3>
+                        <p style="margin-top:0.5rem;"><a href="${file.link}" target="_blank" class="btn" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Tsitsani / Onani File</a></p>
+                    </div>
+                `;
+            });
+            box.innerHTML = html;
+        }
+
         function updateChoirDate() {
             const newDate = document.getElementById('admin-choir-date').value;
             if (newDate) {
                 localStorage.setItem('nac_choir_date', newDate);
+                document.getElementById('choir-date-display').innerHTML = `<strong>Tsiku:</strong> ${newDate}`;
                 alert(`Tsiku la choir lasinthidwa kukhala: ${newDate}`);
                 document.getElementById('admin-choir-date').value = '';
             } else {
@@ -668,11 +851,11 @@
             }
         }
 
-        // 6. Post Announcement (Admin)
         function postAnnouncement() {
             const announcementText = document.getElementById('admin-announcement').value;
             if (announcementText) {
                 localStorage.setItem('nac_latest_announcement', announcementText);
+                document.getElementById('latest-announcement-display').innerText = announcementText;
                 alert('Chilengezo chasungidwa ndipo chikuwonekera pa Home!');
                 document.getElementById('admin-announcement').value = '';
             } else {
@@ -680,7 +863,6 @@
             }
         }
 
-        // 7. Render Registered Members in Admin Panel
         function updateMembersListUI() {
             const listBox = document.getElementById('members-list-box');
             if (!listBox) return;
@@ -694,18 +876,29 @@
 
             let html = '<ul style="padding-left: 15px;">';
             registeredMembers.forEach((m) => {
-                html += `<li><strong>${m.name}</strong> (${m.congregation}) - ${m.phone}</li>`;
+                html += `<li><strong>${m.name}</strong> (${m.congregation}) - Tier: <strong>${m.tier || 'Standard'}</strong> (K${m.amount || '1000'}) - Due: ${m.dueDate || '30 days'}</li>`;
             });
             html += '</ul>';
             listBox.innerHTML = html;
         }
 
-        // 8. On Load Initializer
         window.onload = function() {
             updateMembersListUI();
+            renderPublicFiles();
+
+            const savedHeading = localStorage.getItem('nac_welcome_heading');
+            if (savedHeading) document.getElementById('welcoming-heading').innerText = savedHeading;
+
+            const savedText = localStorage.getItem('nac_welcome_text');
+            if (savedText) document.getElementById('welcoming-text').innerHTML = savedText;
+
+            const savedChoir = localStorage.getItem('nac_choir_date');
+            if (savedChoir) document.getElementById('choir-date-display').innerHTML = `<strong>Tsiku:</strong> ${savedChoir}`;
+
+            const savedAnnounce = localStorage.getItem('nac_latest_announcement');
+            if (savedAnnounce) document.getElementById('latest-announcement-display').innerText = savedAnnounce;
         };
 
-        // 9. Login Handler
         function handleLogin(event) {
             event.preventDefault();
             alert("Mwalowa bwino pa portal!");
