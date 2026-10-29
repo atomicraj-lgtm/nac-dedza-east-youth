@@ -711,6 +711,8 @@
             const role = document.getElementById('reg-role').value;
             const tier = document.getElementById('reg-tier').value;
             const amount = document.getElementById('reg-amount').value;
+            
+            // Generate exact live timestamp (2026)
             const regDate = new Date();
             const dueDate = new Date();
             dueDate.setDate(regDate.getDate() + 30);
