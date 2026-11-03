@@ -620,12 +620,18 @@
 
                 <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
 
-                <!-- File Upload / Resources Management -->
+                <!-- Direct PDF / Word File Upload / Resources Management -->
                 <div class="form-group">
-                    <label>Kuyika Zikalata / Files pa Portal (Admin Upload):</label>
-                    <input type="text" id="admin-file-title" placeholder="Mutu wa Chikalata (e.g., Kwaya Program PDF)">
-                    <input type="url" id="admin-file-link" placeholder="Link ya Fayilo / Google Drive URL" style="margin-top:0.4rem;">
-                    <button onclick="uploadAdminFile()" class="btn" style="margin-top: 0.5rem; width: 100%;">Tumizani Fayilo pa Portal</button>
+                    <label>Kuyika Zikalata / PDF / Word Files pa Portal (Admin File Upload):</label>
+                    <input type="text" id="admin-file-title" placeholder="Mutu wa Chikalata (e.g., Kwaya Program PDF / Youth Guide Word)">
+                    
+                    <label style="margin-top: 0.5rem; display: block; font-weight: bold;">Sankhani Fayilo (PDF kapena Word Document):</label>
+                    <input type="file" id="admin-file-input" accept=".pdf,.doc,.docx,.txt" style="margin-top:0.3rem;">
+
+                    <label style="margin-top:0.6rem; display: block;">Kapena matirani Google Drive / External Link (Optional):</label>
+                    <input type="url" id="admin-file-link" placeholder="Link ya Fayilo (Ngati muli nayo)" style="margin-top:0.2rem;">
+
+                    <button id="upload-file-btn" onclick="uploadAdminFile()" class="btn" style="margin-top: 0.7rem; width: 100%;">Tumizani Fayilo pa Portal</button>
                 </div>
 
                 <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #cbd5e0;">
@@ -666,6 +672,10 @@
     <!-- JavaScript Scripts -->
     <script>
         const SHEETDB_URL = 'https://sheetdb.io/api/v1/wy7x9vikri7ig';
+        
+        // Cloudinary Unsigned Upload Credentials
+        const CLOUDINARY_CLOUD_NAME = 'demo'; 
+        const CLOUDINARY_PRESET = 'docs_upload'; 
 
         function selectTier(tierName, amount, element) {
             document.querySelectorAll('.tier-card').forEach(card => card.classList.remove('selected'));
@@ -885,21 +895,66 @@ ${smsMessage}`);
             alert("Mawu olandiridwa pa Home zasinthidwa bwino!");
         }
 
-        function uploadAdminFile() {
+        async function uploadAdminFile() {
             const title = document.getElementById('admin-file-title').value;
-            const link = document.getElementById('admin-file-link').value;
+            const fileInput = document.getElementById('admin-file-input');
+            const manualLink = document.getElementById('admin-file-link').value;
+            const uploadBtn = document.getElementById('upload-file-btn');
 
-            if (!title || !link) {
-                alert("Chonde lembani mutu ndi link ya fayiloyo.");
+            if (!title) {
+                alert("Chonde lembani mutu wa chikalatacho!");
+                return;
+            }
+
+            let fileUrl = manualLink;
+
+            // Direct File Upload handling via Cloudinary or Data URL fallback
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                uploadBtn.innerText = "Kuyika fayilo pa Intaneti...";
+                uploadBtn.disabled = true;
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', CLOUDINARY_PRESET);
+
+                    const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (uploadRes.ok) {
+                        const uploadJson = await uploadRes.json();
+                        fileUrl = uploadJson.secure_url;
+                    } else {
+                        // Local DataURL Fallback if network cloud is blocked
+                        fileUrl = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                    }
+                } catch (e) {
+                    console.log('Upload fallback active:', e);
+                } finally {
+                    uploadBtn.innerText = "Tumizani Fayilo pa Portal";
+                    uploadBtn.disabled = false;
+                }
+            }
+
+            if (!fileUrl) {
+                alert("Chonde sankhani fayilo (PDF/Word) kapena matirani URL link!");
                 return;
             }
 
             let adminFiles = JSON.parse(localStorage.getItem('nac_admin_files')) || [];
-            adminFiles.push({ title, link });
+            adminFiles.push({ title, link: fileUrl });
             localStorage.setItem('nac_admin_files', JSON.stringify(adminFiles));
 
-            alert("Chikalata chaimidwa pa portal!");
+            alert("Chikalata chaimidwa bwino pa portal!");
             document.getElementById('admin-file-title').value = '';
+            document.getElementById('admin-file-input').value = '';
             document.getElementById('admin-file-link').value = '';
             renderPublicFiles();
         }
@@ -919,7 +974,7 @@ ${smsMessage}`);
                 html += `
                     <div class="card">
                         <h3>${file.title}</h3>
-                        <p style="margin-top:0.5rem;"><a href="${file.link}" target="_blank" class="btn" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Tsitsani / Onani File</a></p>
+                        <p style="margin-top:0.5rem;"><a href="${file.link}" target="_blank" download class="btn" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Tsitsani / Onani File</a></p>
                     </div>
                 `;
             });
