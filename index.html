@@ -558,13 +558,25 @@
                         <strong>Ndalama Zolipira:</strong> <span id="display-amount" style="color:var(--accent); font-weight:bold;">K1,000</span> / Mwezi<br>
                         <strong>Airtel Money Number:</strong> <span style="font-family:monospace; font-weight:bold; color:#1a365d;">0999682766</span><br>
                         <strong>Mpamba Number:</strong> <span style="font-family:monospace; font-weight:bold; color:#1a365d;">0888793963</span><br>
-                        <span style="font-size:0.75rem; color:#4a5568;">(Tumizani ndalama ku nambala imeneyi, kenako lembetsani pano.)</span>
+                        <span style="font-size:0.75rem; color:#4a5568;">(Tumizani ndalama ku nambala imeneyi, kenako lembani Reference Code ya SMS m'bokosi lili pansili.)</span>
                     </div>
 
+                    <!-- Transaction Reference ID Field -->
                     <div class="form-group">
-                        <label>Chinsinsi (Password) *</label>
-                        <input type="password" id="reg-password" required>
+                        <label>Transaction Reference ID / Umboni wa Malipiro *</label>
+                        <input type="text" id="reg-txnid" required placeholder="E.g. MP260303.1754.A12345 kapena Airtel Ref...">
                     </div>
+
+                    <!-- Password & Confirm Password -->
+                    <div class="form-group">
+                        <label>Chinsinsi (Password) * [Min 6 characters]</label>
+                        <input type="password" id="reg-password" required minlength="6" placeholder="Lowetsani chinsinsi (osachepera malembo 6)">
+                    </div>
+                    <div class="form-group">
+                        <label>Tsimikizirani Chinsinsi (Confirm Password) *</label>
+                        <input type="password" id="reg-confirm-password" required minlength="6" placeholder="Bwerezani chinsinsi chomwejo">
+                    </div>
+
                     <button type="submit" class="btn" style="width: 100%;">Lembetsani & Lipirani</button>
                 </form>
             </div>
@@ -583,7 +595,7 @@
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" id="login-password" required>
+                        <input type="password" id="login-password" required placeholder="Lowetsani chinsinsi chanu">
                     </div>
                     <button type="submit" class="btn" style="width: 100%;">Lowa</button>
                 </form>
@@ -653,7 +665,6 @@
 
     <!-- JavaScript Scripts -->
     <script>
-        // Updated SheetDB API Endpoint URL
         const SHEETDB_URL = 'https://sheetdb.io/api/v1/wy7x9vikri7ig';
 
         function selectTier(tierName, amount, element) {
@@ -698,6 +709,20 @@
         async function handleRegister(event) {
             event.preventDefault();
 
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+            // Password Validation Rules
+            if (password.length < 6) {
+                alert("Chinsinsi (Password) iyenera kukhala ndi malembo osachepera 6!");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Chinsinsi chomwe mwalemba ndi cha Confirm Password sizikugwirizana! Chonde bweretsani bwino.");
+                return;
+            }
+
             const submitBtn = event.target.querySelector('button[type="submit"]');
             if (submitBtn) {
                 submitBtn.innerText = "Kutumiza...";
@@ -711,8 +736,8 @@
             const role = document.getElementById('reg-role').value;
             const tier = document.getElementById('reg-tier').value;
             const amount = document.getElementById('reg-amount').value;
-            
-            // Generate exact live timestamp (2026)
+            const txnid = document.getElementById('reg-txnid').value;
+
             const regDate = new Date();
             const dueDate = new Date();
             dueDate.setDate(regDate.getDate() + 30);
@@ -726,6 +751,8 @@
                     Role: role,
                     Tier: tier,
                     Amount: "K" + amount,
+                    TxnID: txnid,
+                    Password: password,
                     Timestamp: regDate.toLocaleString()
                 }]
             };
@@ -743,17 +770,19 @@
                 if (response.ok) {
                     let registeredMembers = JSON.parse(localStorage.getItem('nac_members')) || [];
                     registeredMembers.push({ 
-                        name, email, phone, congregation, role, tier, amount, 
+                        name, email, phone, congregation, role, tier, amount, txnid, password,
                         regDate: regDate.toLocaleDateString(), 
                         dueDate: dueDate.toLocaleDateString() 
                     });
                     localStorage.setItem('nac_members', JSON.stringify(registeredMembers));
 
-                    const smsMessage = `[NAC Dedza East] Zikomo ${name}! Malipiro a ${tier} Tier (K${amount}) amvedwa. Subscription yanu ndiyovomerezeka mpaka ${dueDate.toLocaleDateString()}. Onetsetsani kuti mwandokonzanso patatha masiku 30 (Airtel: 0999682766 | Mpamba: 0888793963).`;
+                    const smsMessage = `[NAC Dedza East] Zikomo ${name}! Malipiro a ${tier} Tier (K${amount}) okhala ndi Ref: ${txnid} amvedwa. Subscription yanu ndiyovomerezeka mpaka ${dueDate.toLocaleDateString()}. Onetsetsani kuti mwandokonzanso patatha masiku 30 (Airtel: 0999682766 | Mpamba: 0888793963).`;
 
                     alert(`Zikomo ${name}!
 
-Kulembetsa ndi malipiro a ${tier} Tier (K${amount}) kwalandiridwa bwino ndipo kwasungika mu Google Sheets.
+Kulembetsa ndi malipiro a ${tier} Tier (K${amount}) pamodzi ndi Ref: ${txnid} kwalandiridwa bwino ndipo kwasungika mu Google Sheets.
+
+Sungani Chinsinsi (Password) yanu kuti mudzi-logera pa portal!
 
 [SMS Notification Prompt]:
 ${smsMessage}`);
@@ -762,7 +791,7 @@ ${smsMessage}`);
                     updateMembersListUI();
                     switchTab('home');
                 } else {
-                    alert("Pali vuto pakutumiza ku Google Sheets. Onetsetsani kuti Row 1 ya Sheet yanu ili ndi mitu: Name, Email, Phone, Congregation, Role, Tier, Amount, Timestamp.");
+                    alert("Pali vuto pakutumiza ku Google Sheets. Onetsetsani kuti Row 1 ya Sheet yanu ili ndi mitu 10 mwa dongosolo lino: Name, Email, Phone, Congregation, Role, Tier, Amount, TxnID, Password, Timestamp.");
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -771,6 +800,62 @@ ${smsMessage}`);
                 if (submitBtn) {
                     submitBtn.innerText = "Lembetsani & Lipirani";
                     submitBtn.disabled = false;
+                }
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            const loginBtn = event.target.querySelector('button[type="submit"]');
+            if (loginBtn) {
+                loginBtn.innerText = "Kuyang'ana...";
+                loginBtn.disabled = true;
+            }
+
+            let registeredMembers = JSON.parse(localStorage.getItem('nac_members')) || [];
+            
+            // First check local storage
+            let foundMember = registeredMembers.find(m => 
+                (m.phone === identifier || m.email === identifier) && m.password === password
+            );
+
+            if (foundMember) {
+                alert(`Zikomo ${foundMember.name}! Mwalowa bwino pa NAC Dedza East Youth Portal.`);
+                document.getElementById('loginForm').reset();
+                switchTab('home');
+                if (loginBtn) {
+                    loginBtn.innerText = "Lowa";
+                    loginBtn.disabled = false;
+                }
+                return;
+            }
+
+            // Secondary check directly via SheetDB API
+            try {
+                const response = await fetch(SHEETDB_URL);
+                const data = await response.json();
+                
+                let apiMember = data.find(m => 
+                    (m.Phone === identifier || m.Email === identifier) && m.Password === password
+                );
+
+                if (apiMember) {
+                    alert(`Zikomo ${apiMember.Name}! Mwalowa bwino pa NAC Dedza East Youth Portal.`);
+                    document.getElementById('loginForm').reset();
+                    switchTab('home');
+                } else {
+                    alert("KULOWA KWALEPHERA! Nambala ya Foni/Email kapena Chinsinsi (Password) ndi zolakwika. Onetsetsani kuti mwaleledwa bwino kapena choyamba lembetsani.");
+                }
+            } catch (err) {
+                alert("KULOWA KWALEPHERA! Nambala ya Foni/Email kapena Chinsinsi (Password) ndi zolakwika.");
+            } finally {
+                if (loginBtn) {
+                    loginBtn.innerText = "Lowa";
+                    loginBtn.disabled = false;
                 }
             }
         }
@@ -878,7 +963,7 @@ ${smsMessage}`);
 
             let html = '<ul style="padding-left: 15px;">';
             registeredMembers.forEach((m) => {
-                html += `<li><strong>${m.name}</strong> (${m.congregation}) - Tier: <strong>${m.tier || 'Standard'}</strong> (K${m.amount || '1000'}) - Due: ${m.dueDate || '30 days'}</li>`;
+                html += `<li><strong>${m.name}</strong> (${m.congregation}) - Tier: <strong>${m.tier || 'Standard'}</strong> (K${m.amount || '1000'}) - Ref: <em>${m.txnid || 'N/A'}</em> - Due: ${m.dueDate || '30 days'}</li>`;
             });
             html += '</ul>';
             listBox.innerHTML = html;
@@ -900,12 +985,6 @@ ${smsMessage}`);
             const savedAnnounce = localStorage.getItem('nac_latest_announcement');
             if (savedAnnounce) document.getElementById('latest-announcement-display').innerText = savedAnnounce;
         };
-
-        function handleLogin(event) {
-            event.preventDefault();
-            alert("Mwalowa bwino pa portal!");
-            switchTab('home');
-        }
     </script>
 </body>
 </html>
